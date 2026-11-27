@@ -1,0 +1,68 @@
+import sys; sys.path.insert(0,'.'); from render import *
+P="/home/claude/midia/lote01"; os.makedirs(P,exist_ok=True)
+CTA="Link na bio"
+V={
+"D4_video_T05_sem_justa_causa":[("v",None,None,"Demitido sem justa causa?","Confira se você recebeu tudo isso.",None,3.2),
+ ("c","1",VERDE,"Saldo e aviso","Dias trabalhados no mês e aviso prévio: 30 dias + 3 por ano.",None,4.0),
+ ("c","2",VERDE,"13º e férias","13º proporcional e férias proporcionais + 1/3.",None,4.0),
+ ("c","40%",VERDE,"Multa do FGTS","E você pode sacar o saldo do FGTS.","Lei 8.036/90, art. 18",4.2),
+ ("c","✓",VERDE,"Seguro-desemprego","Se você cumprir o tempo mínimo trabalhado.","Lei 7.998/90",3.8),
+ ("v",None,None,"Quanto dá no seu caso?","Calculadora grátis",CTA,3.5)],
+"D5_video_T06_justa_causa":[("v",None,None,"Demitido por justa causa?","Você não perde tudo. Veja o que ainda é seu.",None,3.4),
+ ("c","✓",VERDE,"Continua seu","Saldo de salário\nFérias vencidas + 1/3",None,4.0),
+ ("c","R$ 0",VERM,"Você perde","Aviso, 13º e férias proporcionais\nMulta e saque do FGTS\nSeguro-desemprego",None,4.6),
+ ("c","482",OURO,"Só nos casos da lei","A justa causa precisa se encaixar no art. 482 da CLT.","CLT, art. 482",4.0),
+ ("v",None,None,"Confira sua rescisão","Calculadora grátis",CTA,3.5)],
+"D6_video_T08_aviso_2_horas":[("v","2h",MINT,"a menos por dia","Cumprindo aviso depois de ser demitido?",None,3.4),
+ ("c","2h",VERDE,"por dia","Você pode sair 2 horas mais cedo, sem desconto no salário.",None,4.0),
+ ("c","7",VERDE,"dias corridos","Ou trabalhar normal e folgar os 7 últimos dias do aviso.","CLT, art. 488",4.2),
+ ("c","!",OURO,"Atenção","Vale quando a demissão é pela empresa, não no pedido de demissão.",None,4.2),
+ ("v",None,None,"Calcule sua rescisão","grátis, em 1 minuto",CTA,3.5)],
+"D7_video_T09_homologacao":[("v",None,None,"Precisa homologar no sindicato?","A resposta mudou em 2017.",None,3.4),
+ ("c","2017",VERDE,"acabou a obrigação","A Reforma tirou a exigência, salvo se a convenção da sua categoria exigir.","Lei 13.467/2017",4.4),
+ ("c","10",VERDE,"dias continuam valendo","A empresa ainda tem 10 dias para pagar e entregar os documentos.","CLT, art. 477, § 6º",4.2),
+ ("v",None,None,"Confira os valores antes de assinar","Calculadora grátis",CTA,3.5)],
+}
+C={
+"D1_carrossel_T60_checklist":[("v",None,None,None,"Checklist da rescisão","Confira item por item antes de assinar.","Salve para usar depois →"),
+ ("c","ITEM 1",VERDE,"1","Saldo de salário","Os dias trabalhados no mês da saída.",None),
+ ("c","ITEM 2",VERDE,"2","Aviso prévio","Trabalhado ou indenizado: 30 dias + 3 por ano de casa.",None),
+ ("c","ITEM 3",VERDE,"3","13º proporcional","1/12 por mês com 15 dias ou mais trabalhados.",None),
+ ("c","ITEM 4",VERDE,"4","Férias + 1/3","Vencidas e proporcionais, sempre com o terço.",None),
+ ("c","ITEM 5",VERDE,"5","FGTS","Depósito do mês e, se tiver direito, multa de 40% e liberação do saque.","CLT, art. 477"),
+ ("v",None,None,None,"Faltou algum item?","Confira os valores na calculadora grátis.","Link na bio · @calculatrabalho")],
+"D2_carrossel_T18_faltas_ferias":[("v",None,None,None,"Faltou muito no ano?","Suas férias podem encolher. Veja a tabela da lei.","Arraste para o lado →"),
+ ("c","ATÉ 5 FALTAS",VERDE,"30","dias de férias","Férias completas.",None),
+ ("c","6 A 14 FALTAS",VERDE,"24","dias de férias",None,None),
+ ("c","15 A 23 FALTAS",OURO,"18","dias de férias",None,None),
+ ("c","24 A 32 FALTAS",OURO,"12","dias de férias",None,None),
+ ("c","MAIS DE 32",VERM,"0","Perde as férias","Mais de 32 faltas sem justificativa no período.","CLT, art. 130"),
+ ("v",None,None,None,"Falta com atestado não conta","Só faltas sem justificativa reduzem as férias.","Siga @calculatrabalho")],
+"D3_carrossel_T48_faltas_justificadas":[("v",None,None,None,"Essas faltas não podem ser descontadas","Salve e mostre para o seu RH.","Arraste para o lado →"),
+ ("c","CASAMENTO",VERDE,"3","dias seguidos","Para o seu casamento.",None),
+ ("c","LUTO",VERDE,"2","dias seguidos","Falecimento de cônjuge, pais, filhos, irmãos ou dependente.",None),
+ ("c","DOAÇÃO DE SANGUE",VERDE,"1","dia por ano","A cada 12 meses de trabalho.",None),
+ ("c","TÍTULO DE ELEITOR",VERDE,"2","dias","Para fazer o alistamento eleitoral.",None),
+ ("c","FILHO AO MÉDICO",VERDE,"1","dia por ano","Para acompanhar filho de até 6 anos em consulta.","CLT, art. 473"),
+ ("v",None,None,None,"Quer conferir seu salário e seus direitos?","Calculadoras grátis no link da bio.","@calculatrabalho")],
+"D4_carrossel_T34_seguro_desemprego":[("v",None,None,None,"Tem direito ao seguro-desemprego?","Veja os pontos que decidem.","Arraste para o lado →"),
+ ("c","REGRA 1",VERDE,"1","Demitido sem justa causa","Pedido de demissão, acordo e justa causa não dão direito.",None),
+ ("c","REGRA 2",VERDE,"12","meses no 1º pedido","Trabalhados nos últimos 18 meses antes da demissão.","Lei 7.998/90, art. 3º"),
+ ("c","PRAZO",OURO,"120","dias para pedir","Peça entre o 7º e o 120º dia depois da demissão.",None),
+ ("c","PARCELAS",VERDE,"3 a 5","parcelas","Conforme o tempo trabalhado e quantas vezes você já pediu.",None),
+ ("v",None,None,None,"Saiu do emprego?","Calcule sua rescisão grátis.","Link na bio · @calculatrabalho")],
+"D5_carrossel_T20_ferias_em_3":[("v",None,None,None,"Dá para tirar férias em pedaços?","Sim, com algumas regras.","Arraste para o lado →"),
+ ("c","ATÉ",VERDE,"3","períodos","Se você e a empresa concordarem.",None),
+ ("c","UM DELES",VERDE,"14","dias ou mais","Pelo menos um período precisa ter 14 dias.",None),
+ ("c","OS OUTROS",VERDE,"5","dias ou mais","Nenhum período pode ter menos de 5 dias.","CLT, art. 134, § 1º"),
+ ("c","ATENÇÃO",OURO,"2","dias antes do feriado","As férias não podem começar nos 2 dias antes de feriado ou da folga semanal.","CLT, art. 134, § 3º"),
+ ("v",None,None,None,"Planejando as férias?","Siga para ver seus direitos em números.","@calculatrabalho")],
+}
+I={
+"D1_imagem_T25_datas_13":("v","13º SALÁRIO",MINT,"20/12","é o prazo da 2ª parcela","A 1ª parcela vence em 30/11. Siga @calculatrabalho para não perder prazos.","Lei 4.749/65"),
+"D3_imagem_T21_ferias_2_dias":("c","FÉRIAS",VERDE,"2 dias","antes das férias","É o prazo para a empresa pagar suas férias.","CLT, art. 145"),
+"D5_imagem_T42_hora_extra":("c","HORA EXTRA",VERDE,"+50%","no mínimo","Toda hora extra vale pelo menos 50% a mais que a hora normal.","CF, art. 7º, XVI"),
+}
+for n,c in V.items(): print(n, video(P,n,c),"s")
+for n,s in C.items(): carrossel(f"{P}/{n}",s); print(n,len(s),"telas")
+for n,a in I.items(): slide(f"{P}/{n}.png",*a); print(n)
